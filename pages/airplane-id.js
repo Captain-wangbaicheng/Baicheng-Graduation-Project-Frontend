@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import styles from "./predict.module.scss";
-import Link from 'next/link';
+import Link from "next/link";
 import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
 import {
   Form,
@@ -283,8 +283,23 @@ function Predict() {
   }, [predictResult]);
 
   const onFinish = (values) => {
+    if (
+      ![
+        "AB1015",
+        "AB1014",
+        "AB1013",
+        "AB1010",
+        "AB1009",
+        "AB1008",
+        "AB1007",
+        "AB1006",
+      ].includes(values.pass_id)
+    ) {
+      alert("该航班不存在");
+      return;
+    }
     axios
-      .post(`http://localhost:8000/seat_selection/airplane_id/`)
+      .post(`http://localhost:8000/seat_selection/airplane_id/`, values)
       .then((res) => {
         const data = res.data;
         setpredictResult({
@@ -303,22 +318,22 @@ function Predict() {
         <div className={styles["main-page"]}>
           <div className={styles["top"]}>
             <h1 className={styles["top_left"]}>航班预测</h1>
-              <div className={styles["top_right"]}>
-                  <Link href={'http://localhost:3000/'}>
-                    <Button className={styles.button1} >系统首页</Button>
-                  </Link>
-                  <Link href={'http://localhost:3000/predict'}>
-                    <Button className={styles.button1} >付费选座预测</Button>
-                  </Link>
-                  <Button className={styles.button1} >历史数据可视化展示</Button>
-                  <Link href={'http://localhost:3000/airplane-id'}>
-                    <Button className={styles.button1} >航班查询</Button>
-                  </Link>
-              </div>
+            <div className={styles["top_right"]}>
+              <Link href={"http://localhost:3000/"}>
+                <Button className={styles.button1}>系统首页</Button>
+              </Link>
+              <Link href={"http://localhost:3000/predict"}>
+                <Button className={styles.button1}>付费选座预测</Button>
+              </Link>
+              <Button className={styles.button1}>历史数据可视化展示</Button>
+              <Link href={"http://localhost:3000/airplane-id"}>
+                <Button className={styles.button1}>航班查询</Button>
+              </Link>
+            </div>
           </div>
-          <div className={styles["border"]}> 
+          <div className={styles["border"]}>
             <h1 className={styles["title"]}>请输入需要查询的航班号</h1>
-          
+
             <Form
               name="basic"
               labelCol={{
@@ -363,9 +378,7 @@ function Predict() {
       return (
         <div className={styles["result-display"]}>
           <div className={styles["title1"]}>
-            <div>
-              已完成航班号查询
-            </div>
+            <div>已完成航班号查询</div>
           </div>
           <div className={styles["wrapper"]}>
             <h1 className={styles["title3"]}>航空旅客画像：</h1>
@@ -375,9 +388,13 @@ function Predict() {
             <div id="predict_next"></div>
             <h1 className={styles["title2"]}>机票价格与机票税费分布统计</h1>
             <div id="pax"></div>
-            <h1 className={styles["title2"]}>最近3年机票总消费金额（国际）分布统计</h1>
+            <h1 className={styles["title2"]}>
+              最近3年机票总消费金额（国际）分布统计
+            </h1>
             <div id="tkt"></div>
-            <h1 className={styles["title2"]}>最近3年常飞城市的平均旋回半径分布统计</h1>
+            <h1 className={styles["title2"]}>
+              最近3年常飞城市的平均旋回半径分布统计
+            </h1>
             <div id="avg"></div>
             <h1 className={styles["title2"]}>最近3年总订票次数分布统计</h1>
             <div id="tkt_book"></div>

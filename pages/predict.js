@@ -18,8 +18,11 @@ import {
   Row,
   Col,
   message,
+  Table,
+  Tag,
+  Space,
 } from "antd";
-import { Bar, Area, Column } from "@antv/g2plot";
+import { Bar, Area, Column, Pie, measureTextWidth } from "@antv/g2plot";
 import { Chart } from "@antv/g2";
 import DataSet from "@antv/data-set";
 import Image from "next/image";
@@ -27,6 +30,96 @@ import { ExportToCsv } from "export-to-csv";
 
 const { Option } = Select;
 const { Dragger } = Upload;
+
+function ResultList(data) {
+  const columns = [
+    {
+      title: "pass_id",
+      dataIndex: "pass_id",
+      key: "pass_id",
+    },
+    {
+      title: "emd_lable",
+      dataIndex: "emd_lable",
+      key: "emd_lable",
+    },
+    {
+      title: "predict_next",
+      dataIndex: "predict_next",
+      key: "predict_next",
+    },
+    {
+      title: "pax_fcny_dense",
+      dataIndex: "pax_fcny_dense",
+      key: "pax_fcny_dense",
+    },
+    {
+      title: "pax_tax_dense",
+      dataIndex: "pax_tax_dense",
+      key: "pax_tax_dense",
+    },
+    {
+      title: "diff_recent_flt_day_dense",
+      dataIndex: "diff_recent_flt_day_dense",
+      key: "diff_recent_flt_day_dense",
+    },
+    {
+      title: "tkt_3y_amt_dense",
+      dataIndex: "tkt_3y_amt_dense",
+      key: "tkt_3y_amt_dense",
+    },
+    {
+      title: "dist_all_cnt_y3_dense",
+      dataIndex: "dist_all_cnt_y3_dense",
+      key: "dist_all_cnt_y3_dense",
+    },
+    {
+      title: "tkt_i_amt_y3_dense",
+      dataIndex: "tkt_i_amt_y3_dense",
+      key: "tkt_i_amt_y3_dense",
+    },
+    {
+      title: "tkt_all_amt_y3_dense",
+      dataIndex: "tkt_all_amt_y3_dense",
+      key: "tkt_all_amt_y3_dense",
+    },
+    {
+      title: "select_seat_cnt_y2_dense",
+      dataIndex: "select_seat_cnt_y2_dense",
+      key: "select_seat_cnt_y2_dense",
+    },
+    {
+      title: "avg_pref_city_radius_y3_dense",
+      dataIndex: "avg_pref_city_radius_y3_dense",
+      key: "avg_pref_city_radius_y3_dense",
+    },
+    {
+      title: "avg_dist_cnt_y2_dense",
+      dataIndex: "avg_dist_cnt_y2_dense",
+      key: "avg_dist_cnt_y2_dense",
+    },
+    {
+      title: "avg_pref_orig_radius_y3_dense",
+      dataIndex: "avg_pref_orig_radius_y3_dense",
+      key: "avg_pref_orig_radius_y3_dense",
+    },
+    {
+      title: "tkt_book_cnt_y3_dense",
+      dataIndex: "tkt_book_cnt_y3_dense",
+      key: "tkt_book_cnt_y3_dense",
+    },
+    {
+      title: "tkt_avg_interval_y3_dense",
+      dataIndex: "tkt_avg_interval_y3_dense",
+      key: "tkt_avg_interval_y3_dense",
+    },
+  ];
+  return (
+    <div className={styles["result-list"]}>
+      <Table columns={columns} dataSource={data} />
+    </div>
+  );
+}
 
 function Predict() {
   const options = {
@@ -239,67 +332,6 @@ function Predict() {
     avg_table.interaction("element-active");
     avg_table.render();
 
-    const tkt_book_table = new Chart({
-      container: "tkt_book",
-      autoFit: true,
-      height: 500,
-    });
-    const tkt_book_data = [
-      {
-        type: "zero",
-        value: predictResult.predict.filter(
-          (ele) => ele.tkt_book_cnt_y3_dense == 0
-        ).length,
-      },
-      {
-        type: "non-zero",
-        value: predictResult.predict.filter(
-          (ele) => ele.tkt_book_cnt_y3_dense != 0
-        ).length,
-      },
-    ];
-    tkt_book_table.data(tkt_book_data);
-    tkt_book_table.coordinate("theta", {
-      radius: 0.75,
-    });
-    tkt_book_table.tooltip({
-      showMarkers: false,
-    });
-    const interval = tkt_book_table
-      .interval()
-      .adjust("stack")
-      .position("value")
-      .color("type", ["#47abfc", "#38c060"])
-      .style({ opacity: 0.4 })
-      .state({
-        active: {
-          style: (element) => {
-            const shape = element.shape;
-            return {
-              matrix: Util.zoom(shape, 1.1),
-            };
-          },
-        },
-      })
-      .label("type", (val) => {
-        const opacity = val === "zero" ? 0.5 : 0;
-        return {
-          offset: -30,
-          style: {
-            opacity,
-            fill: "white",
-            fontSize: 12,
-            shadowBlur: 2,
-            shadowColor: "rgba(0, 0, 0, .45)",
-          },
-          content: (obj) => {
-            return obj.type + "\n" + obj.value + "%";
-          },
-        };
-      });
-    tkt_book_table.interaction("element-single-selected");
-    tkt_book_table.render();
-
     // const tdata = [
     //   {feature_name: '最近1年累计国际里程'},
     //   {feature_name: '最近1年平均订票时间间隔'},
@@ -312,6 +344,110 @@ function Predict() {
     //   {feature_name: '是否乘坐经济舱'},
     //   {feature_name: '是否乘坐商务舱'},
     // ];
+
+    function renderStatistic(containerWidth, text, style) {
+      const { width: textWidth, height: textHeight } = measureTextWidth(
+        text,
+        style
+      );
+      const R = containerWidth / 2;
+      // r^2 = (w / 2)^2 + (h - offsetY)^2
+      let scale = 1;
+      if (containerWidth < textWidth) {
+        scale = Math.min(
+          Math.sqrt(
+            Math.abs(
+              Math.pow(R, 2) /
+                (Math.pow(textWidth / 2, 2) + Math.pow(textHeight, 2))
+            )
+          ),
+          1
+        );
+      }
+      const textStyleStr = `width:${containerWidth}px;`;
+      return `<div style="${textStyleStr};font-size:${scale}em;line-height:${
+        scale < 1 ? 1 : "inherit"
+      };">${text}</div>`;
+    }
+
+    const data = [
+      {
+        type: "0",
+        value: (predictResult.predict
+          .filter(
+            (ele) =>
+              (ele.select_seat_cnt_y2_dense == 0)).length /
+              predictResult.predict.length)
+          .toFixed(2)*100,
+      },
+      {
+        type: "1",
+        value: (predictResult.predict
+          .filter(
+            (ele) =>
+              (ele.select_seat_cnt_y2_dense !== 0)).length /
+              predictResult.predict.length)
+          .toFixed(2)*100,
+      },
+    ];
+
+    const piePlot = new Pie("tkt_book", {
+      appendPadding: 10,
+      data,
+      angleField: "value",
+      colorField: "type",
+      radius: 1,
+      innerRadius: 0.64,
+      meta: {
+        value: {
+          formatter: (v) => `${v} %`,
+        },
+      },
+      label: {
+        type: "inner",
+        offset: "-50%",
+        style: {
+          textAlign: "center",
+        },
+        autoRotate: false,
+        content: "{value}",
+      },
+      statistic: {
+        title: {
+          offsetY: -4,
+          customHtml: (container, view, datum) => {
+            const { width, height } = container.getBoundingClientRect();
+            const d = Math.sqrt(
+              Math.pow(width / 2, 2) + Math.pow(height / 2, 2)
+            );
+            const text = datum ? datum.type : "总计";
+            return renderStatistic(d, text, { fontSize: 28 });
+          },
+        },
+        content: {
+          offsetY: 4,
+          style: {
+            fontSize: "32px",
+          },
+          customHtml: (container, view, datum, data) => {
+            const { width } = container.getBoundingClientRect();
+
+            const text = datum
+              ? `${datum.value} %`
+              : `${data.reduce((r, d) => r + d.value, 0)} %`;
+            return renderStatistic(width, text, { fontSize: 32 });
+          },
+        },
+      },
+      // 添加 中心统计文本 交互
+      interactions: [
+        { type: "element-selected" },
+        { type: "element-active" },
+        { type: "pie-statistic-active" },
+      ],
+    });
+
+    piePlot.render();
 
     const feature_importance_data = predictResult.feature_importance.filter(
       (ele) => ele.value >= 0.015
@@ -475,11 +611,12 @@ function Predict() {
               最近3年常飞城市的平均旋回半径分布统计
             </h1>
             <div id="avg"></div>
-            <h1 className={styles["title2"]}>最近3年总订票次数分布统计</h1>
+            <h1 className={styles["title2"]}>最近2年付费选座次数</h1>
             <div id="tkt_book"></div>
             <h1 className={styles["title2"]}>特征重要程度(&gt;=0.015)</h1>
             <div id="feature_importance"></div>
           </div>
+          {ResultList(predictResult.predict)}
         </div>
       );
   }
