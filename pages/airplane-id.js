@@ -298,14 +298,19 @@ function Predict() {
       alert("该航班不存在");
       return;
     }
-    axios
-      .post(`http://localhost:8000/seat_selection/airplane_id/`, values)
-      .then((res) => {
-        const data = res.data;
-        setpredictResult({
-          predict: data,
-        });
+    var bodyFormData = new FormData();
+    bodyFormData.append("pass_id", values.pass_id);
+    axios({
+      method: "post",
+      url: `http://localhost:8000/seat_selection/airplane_id/`,
+      data: bodyFormData,
+      headers: { "Content-Type": "multipart/form-data" },
+    }).then((res) => {
+      const data = res.data;
+      setpredictResult({
+        predict: data,
       });
+    });
   };
 
   const onFinishFailed = (errorInfo) => {
