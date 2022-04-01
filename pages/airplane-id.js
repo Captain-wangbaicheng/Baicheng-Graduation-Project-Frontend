@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import styles from "./predict.module.scss";
+import Link from 'next/link';
 import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
 import {
   Form,
@@ -48,7 +49,7 @@ function Predict() {
       yField: "value",
       seriesField: "value",
       legend: {
-        position: "top-left",
+        position: "top",
       },
     });
     emd_lable_table.render();
@@ -79,15 +80,15 @@ function Predict() {
       data: predict_next_data,
       xField: "type",
       yField: "percent",
-      label: {
-        // 可手动配置 label 数据标签位置
-        position: "middle", // 'top', 'bottom', 'middle',
-        // 配置样式
-        style: {
-          fill: "#FFFFFF",
-          opacity: 0.6,
-        },
-      },
+      // label: {
+      //   // 可手动配置 label 数据标签位置
+      //   position: "middle", // 'top', 'bottom', 'middle',
+      //   // 配置样式
+      //   style: {
+      //     fill: "#FFFFFF",
+      //     opacity: 0.6,
+      //   },
+      // },
       xAxis: {
         label: {
           autoHide: true,
@@ -300,59 +301,85 @@ function Predict() {
     case null:
       return (
         <div className={styles["main-page"]}>
-          <h1 className={styles["title"]}>输入需要进行预测的航班</h1>
-          <Form
-            name="basic"
-            labelCol={{
-              span: 8,
-            }}
-            wrapperCol={{
-              span: 8,
-            }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-          >
-            <Form.Item
-              label="pass id"
-              name="pass_id"
-              rules={[
-                {
-                  required: true,
-                  message: "请输入航班序号!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              wrapperCol={{
-                offset: 8,
-                span: 16,
+          <div className={styles["top"]}>
+            <h1 className={styles["top_left"]}>航班预测</h1>
+              <div className={styles["top_right"]}>
+                  <Link href={'http://localhost:3000/'}>
+                    <Button className={styles.button1} >系统首页</Button>
+                  </Link>
+                  <Link href={'http://localhost:3000/predict'}>
+                    <Button className={styles.button1} >付费选座预测</Button>
+                  </Link>
+                  <Button className={styles.button1} >历史数据可视化展示</Button>
+                  <Link href={'http://localhost:3000/airplane-id'}>
+                    <Button className={styles.button1} >航班查询</Button>
+                  </Link>
+              </div>
+          </div>
+          <div className={styles["border"]}> 
+            <h1 className={styles["title"]}>请输入需要查询的航班号</h1>
+          
+            <Form
+              name="basic"
+              labelCol={{
+                span: 8,
               }}
+              wrapperCol={{
+                span: 8,
+              }}
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
             >
-              <Button type="primary" htmlType="submit">
-                预测
-              </Button>
-            </Form.Item>
-          </Form>
+              <Form.Item
+                label="航班号"
+                name="pass_id"
+                rules={[
+                  {
+                    required: true,
+                    message: "请输入航班号!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                wrapperCol={{
+                  offset: 8,
+                  span: 16,
+                }}
+              >
+                <div className={styles["down"]}>
+                  <Button type="primary" htmlType="submit">
+                    点击查询
+                  </Button>
+                </div>
+              </Form.Item>
+            </Form>
+          </div>
         </div>
       );
     default:
       return (
         <div className={styles["result-display"]}>
+          <div className={styles["title1"]}>
+            <div>
+              已完成航班号查询
+            </div>
+          </div>
           <div className={styles["wrapper"]}>
-            <h1>emd lable</h1>
+            <h1 className={styles["title3"]}>航空旅客画像：</h1>
+            <h1 className={styles["title2"]}>是否付费选座分布统计</h1>
             <div id="emd_lable"></div>
-            <h1>predict next</h1>
+            <h1 className={styles["title2"]}>付费选座概率分布统计</h1>
             <div id="predict_next"></div>
-            <h1>pax data</h1>
+            <h1 className={styles["title2"]}>机票价格与机票税费分布统计</h1>
             <div id="pax"></div>
-            <h1>tkt visualization</h1>
+            <h1 className={styles["title2"]}>最近3年机票总消费金额（国际）分布统计</h1>
             <div id="tkt"></div>
-            <h1>avg data visualization</h1>
+            <h1 className={styles["title2"]}>最近3年常飞城市的平均旋回半径分布统计</h1>
             <div id="avg"></div>
-            <h1> tkt book</h1>
+            <h1 className={styles["title2"]}>最近3年总订票次数分布统计</h1>
             <div id="tkt_book"></div>
           </div>
         </div>

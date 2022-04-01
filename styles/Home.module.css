@@ -5,32 +5,51 @@
 
 .main {
   min-height: 100vh;
-  padding: 4rem 0 0 0;
+  padding: 3rem 0 0 0;
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color:  	#FDF5E6;
 }
 
 .top {
-  width: 1300px;
+  width: 1400px;
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 40px;
-  margin-top: -20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  margin-top: -30px;
+}
+
+.top_right {
+  display: flex;
+  flex-direction: row ;
 }
 
 .image-wrap {
+  /* max-width: 100%; */
+  width: 100%;
+  height: 597px;
+  background-image: url('/homeimg2.jpg');
+  background-repeat: no-repeat;
+  background-attachment:fixed;
+  background-size: 100% 120%;
+}
+
+.button {
+  height: 50px;
+  width: 100px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* max-width: 100%; */
-  width: 1380px;
-  height: 900px;
-  background-image: url('../public/homeimg.jpg');
-
+  text-align: center;
+  font-family: SourceHanSansSC-regular;
+  font-size: 14px;
+  box-shadow: 0 0 5px 1px #999 ;
+  border-radius: 7px;
+  /* background-color: #33CCFF; */
 }
 
 .footer {
@@ -50,10 +69,11 @@
 }
 
 .title a {
-  color: #0070f3;
+  color: #1890ff;
   text-decoration: none;
 }
 
+/* color: #0070f3; */
 /* .title a:hover,
 .title a:focus,
 .title a:active {
@@ -72,19 +92,28 @@
 }
 
 .description {
-  margin: 4rem 0;
+  width: 450px;
+  margin: 3rem 0 0 20px;
+  box-shadow: 0 0 5px 1px #999 ;
   line-height: 1.5;
-  font-size: 1.5rem;
+  text-indent: 30px;
+  background: #fafafa;
+  text-align: justify;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+    Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
-.code {
+/* .code {
   background: #fafafa;
   border-radius: 5px;
   padding: 0.75rem;
   font-size: 1.1rem;
   font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New, monospace;
-}
+} */
 
 .grid {
   display: flex;

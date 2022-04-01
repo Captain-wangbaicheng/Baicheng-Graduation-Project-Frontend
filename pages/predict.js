@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import styles from "./predict.module.scss";
 import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
+import Link from 'next/link';
 import {
   Form,
   Input,
@@ -14,12 +15,14 @@ import {
   Mentions,
   TreeSelect,
   Upload,
+  Row,
   Col,
   message,
 } from "antd";
 import { Bar, Area, Column } from "@antv/g2plot";
 import { Chart } from "@antv/g2";
 import DataSet from "@antv/data-set";
+import Image from 'next/image';
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -46,7 +49,7 @@ function Predict() {
       yField: "value",
       seriesField: "value",
       legend: {
-        position: "top-left",
+        position: "top",
       },
     });
     emd_lable_table.render();
@@ -77,15 +80,15 @@ function Predict() {
       data: predict_next_data,
       xField: "type",
       yField: "percent",
-      label: {
-        // 可手动配置 label 数据标签位置
-        position: "middle", // 'top', 'bottom', 'middle',
-        // 配置样式
-        style: {
-          fill: "#FFFFFF",
-          opacity: 0.6,
-        },
-      },
+      // label: {
+      //   // 可手动配置 label 数据标签位置
+      //   position: "middle", // 'top', 'bottom', 'middle',
+      //   // 配置样式
+      //   style: {
+      //     fill: "#FFFFFF",
+      //     opacity: 0.6,
+      //   },
+      // },
       xAxis: {
         label: {
           autoHide: true,
@@ -277,6 +280,19 @@ function Predict() {
       });
     tkt_book_table.interaction("element-single-selected");
     tkt_book_table.render();
+    
+    // const tdata = [
+    //   {feature_name: '最近1年累计国际里程'},
+    //   {feature_name: '最近1年平均订票时间间隔'},
+    //   {feature_name: '最近3年超级经济舱与经济舱的出行比例'},
+    //   {feature_name: '最近2年付费选座次数'},
+    //   {feature_name: '最近3年国内航班提前购买次数'},
+    //   {feature_name: '最近2年坐中间座位次数'},
+    //   {feature_name: '是否飞往悉尼'},
+    //   {feature_name: '是否乘坐AB1015航班'},
+    //   {feature_name: '是否乘坐经济舱'},
+    //   {feature_name: '是否乘坐商务舱'},
+    // ];
 
     const feature_importance_data = predictResult.feature_importance.filter(
       (ele) => ele.value >= 0.015
@@ -315,6 +331,10 @@ function Predict() {
         alignTick: false,
       },
     });
+    feature_importance_table.legend("feature_name",{
+        position: "right",
+      }
+    );
     feature_importance_table.tooltip({
       showMarkers: false,
     });
@@ -322,18 +342,18 @@ function Predict() {
     feature_importance_table
       .interval()
       .position("feature_name*value")
-      .color("feature_name", "rgb(252,143,72)-rgb(255,215,135)")
-      .label("value", {
-        offset: -15,
-        style: {
-          textAlign: "center",
-          fill: "#000",
-        },
-      })
-      .style({
-        lineWidth: 1,
-        stroke: "#fff",
-      });
+      .color("feature_name", "rgb(252,143,72)-rgb(255,215,135)");
+      // .label("value", {
+      //   offset: -15,
+      //   style: {
+      //     textAlign: "center",
+      //     fill: "#000",
+      //   },
+      // })
+      // .style({
+      //   lineWidth: 1,
+      //   stroke: "#fff",
+      // })
 
     feature_importance_table.render();
   }, [predictResult]);
@@ -362,50 +382,79 @@ function Predict() {
     case null:
       return (
         <div className={styles["main-page"]}>
-          <h1 className={styles["title"]}>请根据模板上传需要预测的数据</h1>
-          <Form wrapperCol={{ span: 24 }}>
-            <Form.Item wrapperCol={{ span: 20, offset: 2 }}>
-              <Dragger {...props}>
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">
-                  Click or drag file to this area to upload
-                </p>
-                <p className="ant-upload-hint">
-                  Support for a single or bulk upload. Strictly prohibit from
-                  uploading company data or other band files
-                </p>
-              </Dragger>
-            </Form.Item>
-            <Form.Item wrapperCol={{ span: 2, offset: 11 }}>
+          <div className={styles["top"]}>
+            <h1 className={styles["top_left"]}>付费选座预测</h1>
+            <div className={styles["top_right"]}>
+                <Link href={'http://localhost:3000/'}>
+                  <Button className={styles.button1} >系统首页</Button>
+                </Link>
+                <Link href={'http://localhost:3000/predict'}>
+                  <Button className={styles.button1} >付费选座预测</Button>
+                </Link>
+                <Button className={styles.button1} >历史数据可视化展示</Button>
+                <Link href={'http://localhost:3000/airplane-id'}>
+                  <Button className={styles.button1} >航班查询</Button>
+                </Link>
+            </div>
+          </div>
 
-                <a download="template.csv" href='../public/template.csv'> 
-                  <Button type="primary">
-                    下载模板       
-                  </Button>
-                </a>
-            </Form.Item>
-          </Form>
+          <div className={styles["border-p"]}> 
+            <h1 className={styles["title"]}>注意：请根据模板上传需要预测的数据</h1>
+            <Form wrapperCol={{ span: 12 }}>
+              <Row>
+                <Col span={4}/>
+                <Col span={16}>
+                  <Form.Item wrapperCol={{ span: 20, offset: 2 }}>
+                    <Dragger {...props}>
+                      <p className="ant-upload-drag-icon">
+                        <InboxOutlined />
+                      </p>
+                      <p className="ant-upload-text">
+                        点击或拖拽文件至此区域以上传并进行付费选座预测
+                      </p>
+                      <p className="ant-upload-hint">
+                        提示： 支持单一或批量上传文件
+                      </p>
+                    </Dragger>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Form.Item wrapperCol={{ span: 2, offset: 11 }}>
+                <div className={styles["down-p"]}>
+                  <a download="template.csv" href="/static/template.csv"> 
+                    <Button type="primary">
+                      下载数据模板       
+                    </Button>
+                  </a>
+                </div>
+              </Form.Item>
+            </Form>
+          </div>
         </div>
       );
     default:
       return (
         <div className={styles["result-display"]}>
+          <div className={styles["title1"]}>
+            <div>
+              已完成付费选座预测
+            </div>
+          </div>
           <div className={styles["wrapper"]}>
-            <h1>emd lable</h1>
+            <h1 className={styles["title3"]}>航空旅客画像：</h1>
+            <h1 className={styles["title2"]}>是否付费选座分布统计</h1>
             <div id="emd_lable"></div>
-            <h1>predict next</h1>
+            <h1 className={styles["title2"]}>付费选座概率分布统计</h1>
             <div id="predict_next"></div>
-            <h1>pax data</h1>
+            <h1 className={styles["title2"]}>机票价格与机票税费分布统计</h1>
             <div id="pax"></div>
-            <h1>tkt visualization</h1>
+            <h1 className={styles["title2"]}>最近3年机票总消费金额（国际）分布统计</h1>
             <div id="tkt"></div>
-            <h1>avg data visualization</h1>
+            <h1 className={styles["title2"]}>最近3年常飞城市的平均旋回半径分布统计</h1>
             <div id="avg"></div>
-            <h1> tkt book</h1>
+            <h1 className={styles["title2"]}>最近3年总订票次数分布统计</h1>
             <div id="tkt_book"></div>
-            <h1>feature importance(&gt;=0.015)</h1>
+            <h1 className={styles["title2"]}>特征重要程度(&gt;=0.015)</h1>
             <div id="feature_importance"></div>
           </div>
         </div>
