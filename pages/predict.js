@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import styles from "./predict.module.scss";
 import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
-import Link from 'next/link';
+import Link from "next/link";
 import {
   Form,
   Input,
@@ -22,12 +22,31 @@ import {
 import { Bar, Area, Column } from "@antv/g2plot";
 import { Chart } from "@antv/g2";
 import DataSet from "@antv/data-set";
-import Image from 'next/image';
+import Image from "next/image";
+import { ExportToCsv } from "export-to-csv";
 
 const { Option } = Select;
 const { Dragger } = Upload;
 
 function Predict() {
+  const options = {
+    fieldSeparator: ",",
+    quoteStrings: '"',
+    decimalSeparator: ".",
+    showLabels: true,
+    showTitle: true,
+    title: "预测结果",
+    useTextFile: false,
+    useBom: true,
+    useKeysAsHeaders: true,
+    // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
+  };
+
+  const exportResultFile = () => {
+    const csvExporter = new ExportToCsv(options);
+    csvExporter.generateCsv(predictResult.predict);
+  };
+
   const [predictResult, setpredictResult] = useState(null);
   useEffect(() => {
     if (predictResult == null) return;
@@ -280,7 +299,7 @@ function Predict() {
       });
     tkt_book_table.interaction("element-single-selected");
     tkt_book_table.render();
-    
+
     // const tdata = [
     //   {feature_name: '最近1年累计国际里程'},
     //   {feature_name: '最近1年平均订票时间间隔'},
@@ -331,10 +350,9 @@ function Predict() {
         alignTick: false,
       },
     });
-    feature_importance_table.legend("feature_name",{
-        position: "right",
-      }
-    );
+    feature_importance_table.legend("feature_name", {
+      position: "right",
+    });
     feature_importance_table.tooltip({
       showMarkers: false,
     });
@@ -343,17 +361,17 @@ function Predict() {
       .interval()
       .position("feature_name*value")
       .color("feature_name", "rgb(252,143,72)-rgb(255,215,135)");
-      // .label("value", {
-      //   offset: -15,
-      //   style: {
-      //     textAlign: "center",
-      //     fill: "#000",
-      //   },
-      // })
-      // .style({
-      //   lineWidth: 1,
-      //   stroke: "#fff",
-      // })
+    // .label("value", {
+    //   offset: -15,
+    //   style: {
+    //     textAlign: "center",
+    //     fill: "#000",
+    //   },
+    // })
+    // .style({
+    //   lineWidth: 1,
+    //   stroke: "#fff",
+    // })
 
     feature_importance_table.render();
   }, [predictResult]);
@@ -385,24 +403,26 @@ function Predict() {
           <div className={styles["top"]}>
             <h1 className={styles["top_left"]}>付费选座预测</h1>
             <div className={styles["top_right"]}>
-                <Link href={'http://localhost:3000/'}>
-                  <Button className={styles.button1} >系统首页</Button>
-                </Link>
-                <Link href={'http://localhost:3000/predict'}>
-                  <Button className={styles.button1} >付费选座预测</Button>
-                </Link>
-                <Button className={styles.button1} >历史数据可视化展示</Button>
-                <Link href={'http://localhost:3000/airplane-id'}>
-                  <Button className={styles.button1} >航班查询</Button>
-                </Link>
+              <Link href={"http://localhost:3000/"}>
+                <Button className={styles.button1}>系统首页</Button>
+              </Link>
+              <Link href={"http://localhost:3000/predict"}>
+                <Button className={styles.button1}>付费选座预测</Button>
+              </Link>
+              <Button className={styles.button1}>历史数据可视化展示</Button>
+              <Link href={"http://localhost:3000/airplane-id"}>
+                <Button className={styles.button1}>航班查询</Button>
+              </Link>
             </div>
           </div>
 
-          <div className={styles["border-p"]}> 
-            <h1 className={styles["title"]}>注意：请根据模板上传需要预测的数据</h1>
+          <div className={styles["border-p"]}>
+            <h1 className={styles["title"]}>
+              注意：请根据模板上传需要预测的数据
+            </h1>
             <Form wrapperCol={{ span: 12 }}>
               <Row>
-                <Col span={4}/>
+                <Col span={4} />
                 <Col span={16}>
                   <Form.Item wrapperCol={{ span: 20, offset: 2 }}>
                     <Dragger {...props}>
@@ -421,10 +441,8 @@ function Predict() {
               </Row>
               <Form.Item wrapperCol={{ span: 2, offset: 11 }}>
                 <div className={styles["down-p"]}>
-                  <a download="template.csv" href="/static/template.csv"> 
-                    <Button type="primary">
-                      下载数据模板       
-                    </Button>
+                  <a download="template.csv" href="/static/template.csv">
+                    <Button type="primary">下载数据模板</Button>
                   </a>
                 </div>
               </Form.Item>
@@ -436,21 +454,26 @@ function Predict() {
       return (
         <div className={styles["result-display"]}>
           <div className={styles["title1"]}>
-            <div>
-              已完成付费选座预测
-            </div>
+            <div>已完成付费选座预测</div>
           </div>
           <div className={styles["wrapper"]}>
             <h1 className={styles["title3"]}>航空旅客画像：</h1>
+            <Button type="primary" onClick={exportResultFile}>
+              下载结果文件
+            </Button>
             <h1 className={styles["title2"]}>是否付费选座分布统计</h1>
             <div id="emd_lable"></div>
             <h1 className={styles["title2"]}>付费选座概率分布统计</h1>
             <div id="predict_next"></div>
             <h1 className={styles["title2"]}>机票价格与机票税费分布统计</h1>
             <div id="pax"></div>
-            <h1 className={styles["title2"]}>最近3年机票总消费金额（国际）分布统计</h1>
+            <h1 className={styles["title2"]}>
+              最近3年机票总消费金额（国际）分布统计
+            </h1>
             <div id="tkt"></div>
-            <h1 className={styles["title2"]}>最近3年常飞城市的平均旋回半径分布统计</h1>
+            <h1 className={styles["title2"]}>
+              最近3年常飞城市的平均旋回半径分布统计
+            </h1>
             <div id="avg"></div>
             <h1 className={styles["title2"]}>最近3年总订票次数分布统计</h1>
             <div id="tkt_book"></div>
