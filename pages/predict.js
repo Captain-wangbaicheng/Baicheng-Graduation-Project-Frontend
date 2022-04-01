@@ -362,7 +362,7 @@ function Predict() {
     case null:
       return (
         <div className={styles["main-page"]}>
-          <h1 className={styles["title"]}>上传需要预测的数据</h1>
+          <h1 className={styles["title"]}>请根据模板上传需要预测的数据</h1>
           <Form wrapperCol={{ span: 24 }}>
             <Form.Item wrapperCol={{ span: 20, offset: 2 }}>
               <Dragger {...props}>
@@ -379,9 +379,12 @@ function Predict() {
               </Dragger>
             </Form.Item>
             <Form.Item wrapperCol={{ span: 2, offset: 11 }}>
-              <Button type="primary" htmlType="submit">
-                上传
-              </Button>
+
+                <a download="template.csv" href='../public/template.csv'> 
+                  <Button type="primary">
+                    下载模板       
+                  </Button>
+                </a>
             </Form.Item>
           </Form>
         </div>
