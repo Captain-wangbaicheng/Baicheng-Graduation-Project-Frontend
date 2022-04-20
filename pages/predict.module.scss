@@ -78,6 +78,46 @@
 .result-display {
   height: 100%;
   width: 100vw;
+  padding-bottom: 20px;
+  .top-h {
+    width: 1550px;
+    padding-right: 150px;
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color:  	#FDF5E6;
+    .top_left-h {
+      padding-top: 2rem;
+      color: #1890ff;
+      padding-left: 100px;
+      font-size: 40px;
+      font-weight: 600;
+    }
+    .top_right-h {
+      padding-top: 2rem;
+      padding-bottom: 20px;
+      margin-right: -20px;
+      display: flex;
+      flex-direction: row ;
+      .button1-h {
+        height: 50px;
+        width: 100px;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        white-space: normal;
+        background-color: #F5F5F5;
+        font-family: SourceHanSansSC-regular;
+        font-size: 14px;
+        box-shadow: 0 0 5px 1px #999 ;
+        border-radius: 7px;
+        /* background-color: #33CCFF; */
+      }
+    }
+  }
   .title1 {
     background-color:  	#FDF5E6;
     padding: 2rem;
@@ -95,13 +135,21 @@
     margin-right: auto;
     padding: 30px;
     .title2 {
-      padding-top: 20px;
+      display: flex;
+      flex-direction: row ;
+      align-items: center;
+      padding-top: 50px;
       padding-bottom: 10px;
+      font-size: 30px;
+      .title4 {
+        padding-left: 10px;
+        font-size: 20px;
+      }
     }
     .title3 {
       padding-top: 1rem;
       color: #1890ff;
-      margin-left: -200px;
+      margin-left: -190px;
       font-size: 40px;
       font-weight: 600;
     }
@@ -109,8 +157,44 @@
   .result-list{
     margin-left: auto;
     margin-right: auto;
+    // padding-bottom: 10px;
     width: 80%;
     overflow-x: scroll;
+    white-space: nowrap;
+    text-align: center;
+    border-style:solid;
+    border-color:#1890ff;
+    border-radius: 7px;
+  }
+  .result-list1{
+    margin-left: auto;
+    margin-right: auto;
+    // padding-bottom: 10px;
+    width: 600px;
+    background-color: 	#F5F5F5;
+    overflow-x: scroll;
+    white-space: nowrap;
+    text-align: center;
+    border-style:solid;
+    border-color:#1890ff;
+    border-radius: 7px;
+  }
+  .title5 {
+    font-size: 30px;
+    margin-left: 500px;
+    padding-top: 50px;
+  }
+  .his-table {
+    display: flex;
+    flex-direction: column ;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    .title6 {
+      font-size: 30px;
+      // margin-left: 600px;
+      padding-top: 50px;
+    }
   }
 }
 

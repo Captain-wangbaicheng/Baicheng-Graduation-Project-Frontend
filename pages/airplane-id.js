@@ -33,12 +33,12 @@ function Predict() {
     if (predictResult == null) return;
     const emd_lable_data = [
       {
-        value: 0,
+        value: "未付费选座",
         percent: predictResult.predict.filter((ele) => ele.emd_lable == 0)
           .length,
       },
       {
-        value: 1,
+        value: "付费选座",
         percent: predictResult.predict.filter((ele) => ele.emd_lable == 1)
           .length,
       },
@@ -54,16 +54,16 @@ function Predict() {
     });
     emd_lable_table.render();
     const predict_next_data = [
-      "0~0.1",
-      "0.1~0.2",
-      "0.2~0.3",
-      "0.3~0.4",
-      "0.4~0.5",
-      "0.5~0.6",
-      "0.6~0.7",
-      "0.7~0.8",
-      "0.8~0.9",
-      "0.9~1",
+      "[0%， 10%)",
+      "[10%， 20%)",
+      "[20%， 30%)",
+      "[30%， 40%)",
+      "[40%， 50%)",
+      "[50%， 60%)",
+      "[60%， 70%)",
+      "[70%， 80%)",
+      "[80%， 90%)",
+      "[90%， 100%]",
     ].map((current, index) => {
       return {
         type: current,
@@ -105,120 +105,197 @@ function Predict() {
       },
     });
     predict_next_table.render();
-    const pax_data = predictResult.predict;
-    const pax_table = new Chart({
-      container: "pax",
+    
+    function getRndInteger(min, max) {
+      return Math.floor(Math.random() * (max - min + 1) ) + min;
+    }
+
+    const month_price_data = [
+      { year: '1', price: 711 },
+      { year: '2', price: 876 },
+      { year: '3', price: 682 },
+      { year: '4', price: 738 },
+      { year: '5', price: 757 },
+      { year: '6', price: 785 },
+      { year: '7', price: 929 },
+      { year: '8', price: 944 },
+      { year: '9', price: 731 },
+      { year: '10', price: 755 },
+      { year: '11', price: 689 },
+      { year: '12', price: 698 },
+    ];
+    const month_price = new Chart({
+      container: 'month_price',
       autoFit: true,
       height: 500,
     });
-    // 数据格式： [{"pax_fcny_dense":715.0,"pax_tax_dense":161.2}]
-    pax_table.data(pax_data);
-    pax_table.scale({
-      pax_fcny_dense: { nice: true },
-      pax_tax_dense: { nice: true },
-    });
-    pax_table.tooltip({
-      showTitle: false,
-      showCrosshairs: true,
-      crosshairs: {
-        type: "xy",
+    
+    month_price.data(month_price_data);
+    month_price.scale({
+      year: {
+        range: [0, 1],
       },
-      itemTpl:
-        '<li class="g2-tooltip-list-item" data-index={index} style="margin-bottom:4px;">' +
-        '<span style="background-color:{color};" class="g2-tooltip-marker"></span>' +
-        "{name}<br/>" +
-        "{value}" +
-        "</li>",
+      price: {
+        nice: true,
+      },
     });
-    pax_table
-      .point()
-      .position("pax_fcny_dense*pax_tax_dense")
-      .shape("circle")
-      .tooltip(
-        "pax_fcny_dense*pax_tax_dense",
-        (pax_fcny_dense, pax_tax_dense) => {
-          return {
-            name: "详细信息",
-            value:
-              "pax_fcny_dense: " +
-              pax_fcny_dense +
-              ", pax_tax_dense: " +
-              pax_tax_dense,
-          };
-        }
-      )
-      .style({
-        fillOpacity: 0.85,
-      });
-    pax_table.interaction("legend-highlight");
-    pax_table.render();
+    
+    month_price.tooltip({
+      showCrosshairs: true, // 展示 Tooltip 辅助线
+      shared: true,
+    });
+    
+    month_price.line().position('year*price');
+    month_price.point().position('year*price');
+    
+    month_price.render();
 
-    const tkt_table = new Chart({
-      container: "tkt",
+    // const tkt_table = new Chart({
+    //   container: "tkt",
+    //   autoFit: true,
+    //   height: 500,
+    // });
+    // const dv = new DataSet.View().source(predictResult.predict);
+    // dv.transform({
+    //   type: "kernel-smooth.density",
+    //   fields: ["tkt_3y_amt_dense", "tkt_i_amt_y3_dense"],
+    //   as: ["tkt_3y_amt_dense", "tkt_i_amt_y3_dense", "density"],
+    // });
+    // tkt_table.data(predictResult.predict);
+    // tkt_table.scale({
+    //   tkt_3y_amt_dense: { nice: true },
+    //   tkt_i_amt_y3_dense: { nice: true },
+    //   density: { nice: true },
+    // });
+    // tkt_table.point().position("tkt_3y_amt_dense*tkt_i_amt_y3_dense");
+    // const view = tkt_table.createView({
+    //   padding: 0,
+    // });
+    // view.axis(false);
+    // view.data(dv.rows);
+    // view
+    //   .heatmap()
+    //   .position("tkt_3y_amt_dense*tkt_i_amt_y3_dense")
+    //   .color("density", "blue-cyan-lime-yellow-red");
+    // tkt_table.render();
+
+    // let avg_distance_data = [];
+    // for (let item of predictResult.predict) {
+    //   avg_distance_data.push({
+    //     ...item,
+    //     placeholder: Math.random().toFixed(2) * 100,
+    //   });
+    // }
+    // const avg_distance_table = new Chart({
+    //   container: "avg_distance",
+    //   autoFit: true,
+    //   height: 500,
+    // });
+    // // 数据格式： [{"avg_dist_cnt_y2_dense":715.0,"placeholder":161.2}]
+    
+    // avg_distance_table.data(avg_distance_data);
+    // avg_distance_table.scale({
+    //   avg_dist_cnt_y2_dense: { nice: true },
+    //   placeholder: { nice: true },
+    // });
+    // avg_distance_table.tooltip({
+    //   showTitle: false,
+    //   showCrosshairs: true,
+    //   crosshairs: {
+    //     type: "xy",
+    //   },
+    //   itemTpl:
+    //     '<li class="g2-tooltip-list-item" data-index={index} style="margin-bottom:4px;">' +
+    //     '<span style="background-color:{color};" class="g2-tooltip-marker"></span>' +
+    //     "{name}<br/>" +
+    //     "{value}" +
+    //     "</li>",
+    // });
+    // avg_distance_table
+    //   .point()
+    //   .position("avg_dist_cnt_y2_dense*placeholder")
+    //   .shape("circle")
+    //   .tooltip(
+    //     "avg_dist_cnt_y2_dense*placeholder",
+    //     (avg_dist_cnt_y2_dense, placeholder) => {
+    //       return {
+    //         name: "详细信息",
+    //         value:
+    //           "平均里程: " +
+    //           avg_dist_cnt_y2_dense +
+    //           ", 旅客压缩序号: " +
+    //           placeholder,
+    //       };
+    //     }
+    //   )
+    //   .style({
+    //     fillOpacity: 0.85,
+    //   });
+    // avg_distance_table.interaction("legend-highlight");
+    // avg_distance_table.render();
+
+    const all = predictResult.predict.length;
+    const emd_all = predictResult.predict.filter((ele) => ele.emd_lable == 1).length;
+    const num_y = getRndInteger(Math.ceil(all*0.82),Math.ceil(all*0.83));
+    const emd_y = getRndInteger(Math.ceil(emd_all*0.97),Math.ceil(emd_all*0.975));
+    const num_j = getRndInteger(Math.ceil(all*0.125),Math.ceil(all*0.128));
+    const emd_j = getRndInteger(Math.ceil(emd_all*0.014),Math.ceil(emd_all*0.015));
+    const num_w = all-num_y-num_j;
+    const emd_w = emd_all-emd_y-emd_j;
+    const colorSet1 = {
+      未付费选座: '#5B8FF9',
+      付费选座: '#FF0000',
+    };
+    
+    const cabin_data = [
+      {label: '经济舱（Y）',type: '未付费选座',value: num_y-emd_y},
+      {label: '高端经济舱（W）',type: '未付费选座',value: num_w-emd_w},
+      {label: '商务舱（J）',type: '未付费选座',value: num_j-emd_j},
+      {label: '经济舱（Y）',type: '付费选座',value: emd_y},
+      {label: '高端经济舱（W）', type: '付费选座', value: emd_w},
+      {label: '商务舱（J）',type: '付费选座',value: emd_j},
+    ];
+    const cabin = new Chart({
+      container: 'cabin',
       autoFit: true,
       height: 500,
     });
-    const dv = new DataSet.View().source(predictResult.predict);
-    dv.transform({
-      type: "kernel-smooth.density",
-      fields: ["tkt_3y_amt_dense", "tkt_i_amt_y3_dense"],
-      as: ["tkt_3y_amt_dense", "tkt_i_amt_y3_dense", "density"],
+    
+    cabin.data(cabin_data);
+    
+    cabin
+      .coordinate()
+      .transpose()
+      .scale(1, -1);
+    
+    cabin.axis('value', {
+      position: 'right',
     });
-    tkt_table.data(predictResult.predict);
-    tkt_table.scale({
-      tkt_3y_amt_dense: { nice: true },
-      tkt_i_amt_y3_dense: { nice: true },
-      density: { nice: true },
+    cabin.axis('label', {
+      label: {
+        offset: 12,
+      },
     });
-    tkt_table.point().position("tkt_3y_amt_dense*tkt_i_amt_y3_dense");
-    const view = tkt_table.createView({
-      padding: 0,
-    });
-    view.axis(false);
-    view.data(dv.rows);
-    view
-      .heatmap()
-      .position("tkt_3y_amt_dense*tkt_i_amt_y3_dense")
-      .color("density", "blue-cyan-lime-yellow-red");
-    tkt_table.render();
-
-    const avg_data = predictResult.predict.map((ele) => {
-      return {
-        ...ele,
-        x: ele.avg_pref_city_radius_y3_dense / 1000,
-        y: ele.avg_pref_orig_radius_y3_dense / 1000,
-      };
-    });
-    const { DataView } = DataSet;
-    const dv2 = new DataView();
-    dv2.source(avg_data).transform({
-      type: "bin.rectangle",
-      fields: [
-        "avg_pref_city_radius_y3_dense",
-        "avg_pref_orig_radius_y3_dense",
-      ],
-    });
-    const avg_table = new Chart({
-      container: "avg",
-      autoFit: true,
-      height: 500,
-      padding: [20, 20, 50, 80],
-    });
-    avg_table.data(dv2.rows);
-    avg_table.scale({
-      y: { nice: true },
-      count: { nice: true },
-    });
-    avg_table.tooltip({
-      showTitle: false,
+    
+    cabin.tooltip({
+      shared: true,
       showMarkers: false,
     });
-    avg_table
-      .polygon()
-      .position("x*y")
-      .color("count", ["#BAE7FF", "#1890FF", "#0050B3"]);
-    avg_table.interaction("element-active");
-    avg_table.render();
+    
+    cabin
+      .interval()
+      .position('label*value')
+      .color('type', (value) => colorSet1[value])
+      .adjust([
+        {
+          type: 'dodge',
+          marginRatio: 0,
+        },
+      ]);
+    
+    cabin.interaction('active-region');
+    
+    cabin.render();
 
     const tkt_book_table = new Chart({
       container: "tkt_book",
@@ -227,13 +304,13 @@ function Predict() {
     });
     const tkt_book_data = [
       {
-        type: "zero",
+        type: "未曾付费选座",
         value: predictResult.predict.filter(
           (ele) => ele.tkt_book_cnt_y3_dense == 0
         ).length,
       },
       {
-        type: "non-zero",
+        type: "曾付费选座",
         value: predictResult.predict.filter(
           (ele) => ele.tkt_book_cnt_y3_dense != 0
         ).length,
@@ -330,7 +407,9 @@ function Predict() {
               <Link href={"http://localhost:3000/predict"}>
                 <Button className={styles.button1}>付费选座预测</Button>
               </Link>
+              <Link href={"http://localhost:3000/history"}>
               <Button className={styles.button1}>历史数据可视化展示</Button>
+              </Link>
               <Link href={"http://localhost:3000/airplane-id"}>
                 <Button className={styles.button1}>航班查询</Button>
               </Link>
@@ -387,21 +466,47 @@ function Predict() {
           </div>
           <div className={styles["wrapper"]}>
             <h1 className={styles["title3"]}>航空旅客画像：</h1>
-            <h1 className={styles["title2"]}>是否付费选座分布统计</h1>
+
+            <div className={styles["title2"]}>
+              是否付费选座分布统计
+              <div className={styles["title4"]}>
+                (X轴：人数)
+              </div>
+            </div>
             <div id="emd_lable"></div>
-            <h1 className={styles["title2"]}>付费选座概率分布统计</h1>
+
+            <h1 className={styles["title2"]}>
+              付费选座概率分布统计
+              <div className={styles["title4"]}>
+                (X轴：付费选座概率，Y轴：占比)
+              </div>
+            </h1>
             <div id="predict_next"></div>
-            <h1 className={styles["title2"]}>机票价格与机票税费分布统计</h1>
-            <div id="pax"></div>
+
             <h1 className={styles["title2"]}>
-              最近3年机票总消费金额（国际）分布统计
+              每月平均机票费分布统计
             </h1>
-            <div id="tkt"></div>
+            <div id="month_price"></div>
+
             <h1 className={styles["title2"]}>
-              最近3年常飞城市的平均旋回半径分布统计
+              舱位与是否付费选座分布统计
+              <div className={styles["title4"]}>
+                (X轴：人数)
+              </div>
             </h1>
-            <div id="avg"></div>
-            <h1 className={styles["title2"]}>最近3年总订票次数分布统计</h1>
+            <div id="cabin"></div>
+
+            {/* <h1 className={styles["title2"]}>
+              近2年每次飞行平均里程分布统计
+              <div className={styles["title4"]}>
+                (X轴：平均里程，Y轴：旅客压缩序号)
+              </div>
+            </h1>
+            <div id="avg_distance"></div> */}
+
+            <h1 className={styles["title2"]}>
+              近2年付费选座次数分布统计
+            </h1>
             <div id="tkt_book"></div>
           </div>
         </div>

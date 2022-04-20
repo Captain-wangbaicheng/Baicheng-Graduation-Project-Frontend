@@ -25,7 +25,9 @@ export default function Home() {
             <Link href={'http://localhost:3000/predict'}>
               <Button className={styles.button} >付费选座预测</Button>
             </Link>
+            <Link href={'http://localhost:3000/history'}>
             <Button className={styles.button} >历史数据可视化展示</Button>
+            </Link>
             <Link href={'http://localhost:3000/airplane-id'}>
               <Button className={styles.button} >航班查询</Button>
             </Link>
