@@ -439,8 +439,11 @@ function Predict() {
                     message: "请输入航班号!",
                   },
                 ]}
+                method="post" 
+                action="{% url 'predict' %}"
               >
-                <Input />
+                <Input  type="text" name='id'/>
+                
               </Form.Item>
               <Form.Item
                 wrapperCol={{
