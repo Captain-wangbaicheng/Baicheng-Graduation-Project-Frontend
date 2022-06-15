@@ -22,6 +22,7 @@ import {
   Tag,
   Space,
   Tabs,
+  BackTop
 } from 'antd';
 import { Bar, Area, Column, Pie, measureTextWidth } from '@antv/g2plot';
 import { Chart, registerShape } from '@antv/g2';
@@ -668,63 +669,63 @@ function Predict() {
       },
     ];
 
-    const piePlot = new Pie('tkt_book', {
-      appendPadding: 10,
-      data,
-      angleField: 'value',
-      colorField: 'type',
-      radius: 1,
-      innerRadius: 0.64,
-      meta: {
-        value: {
-          formatter: (v) => `${v} %`,
-        },
-      },
-      label: {
-        type: 'inner',
-        offset: '-50%',
-        style: {
-          textAlign: 'center',
-        },
-        autoRotate: false,
-        content: '{value}',
-      },
-      statistic: {
-        title: {
-          offsetY: -4,
-          customHtml: (container, view, datum) => {
-            const { width, height } = container.getBoundingClientRect();
-            const d = Math.sqrt(
-              Math.pow(width / 2, 2) + Math.pow(height / 2, 2)
-            );
-            const text = datum ? datum.type : '总计';
-            return renderStatistic(d, text, { fontSize: 28 });
-          },
-        },
-        content: {
-          offsetY: 4,
-          style: {
-            fontSize: '32px',
-          },
-          customHtml: (container, view, datum, data) => {
-            const { width } = container.getBoundingClientRect();
+    // const piePlot = new Pie('tkt_book', {
+    //   appendPadding: 10,
+    //   data,
+    //   angleField: 'value',
+    //   colorField: 'type',
+    //   radius: 1,
+    //   innerRadius: 0.64,
+    //   meta: {
+    //     value: {
+    //       formatter: (v) => `${v} %`,
+    //     },
+    //   },
+    //   label: {
+    //     type: 'inner',
+    //     offset: '-50%',
+    //     style: {
+    //       textAlign: 'center',
+    //     },
+    //     autoRotate: false,
+    //     content: '{value}',
+    //   },
+    //   statistic: {
+    //     title: {
+    //       offsetY: -4,
+    //       customHtml: (container, view, datum) => {
+    //         const { width, height } = container.getBoundingClientRect();
+    //         const d = Math.sqrt(
+    //           Math.pow(width / 2, 2) + Math.pow(height / 2, 2)
+    //         );
+    //         const text = datum ? datum.type : '总计';
+    //         return renderStatistic(d, text, { fontSize: 28 });
+    //       },
+    //     },
+    //     content: {
+    //       offsetY: 4,
+    //       style: {
+    //         fontSize: '32px',
+    //       },
+    //       customHtml: (container, view, datum, data) => {
+    //         const { width } = container.getBoundingClientRect();
 
-            const text = datum
-              ? `${datum.value} %`
-              : `${data.reduce((r, d) => r + d.value, 0)} %`;
-            return renderStatistic(width, text, { fontSize: 32 });
-          },
-        },
-      },
-      // 添加 中心统计文本 交互
-      interactions: [
-        { type: 'element-selected' },
-        { type: 'element-active' },
-        { type: 'pie-statistic-active' },
-      ],
-    });
+    //         const text = datum
+    //           ? `${datum.value} %`
+    //           : `${data.reduce((r, d) => r + d.value, 0)} %`;
+    //         return renderStatistic(width, text, { fontSize: 32 });
+    //       },
+    //     },
+    //   },
+    //   // 添加 中心统计文本 交互
+    //   interactions: [
+    //     { type: 'element-selected' },
+    //     { type: 'element-active' },
+    //     { type: 'pie-statistic-active' },
+    //   ],
+    // });
 
-    piePlot.render();
+    // piePlot.render();
 
     const feature_importance_data = [
       { feature_name: '是否乘坐AB1010航班', value: 0.015304 },
@@ -832,6 +833,9 @@ function Predict() {
               <Link href={'http://localhost:3000/'}>
                 <Button className={styles.button1}>系统首页</Button>
               </Link>
+              <Link href={'http://localhost:3000/algorithm'}>
+                <Button className={styles.button1} >预测算法可视化展示</Button>
+              </Link>
               <Link href={'http://localhost:3000/predict'}>
                 <Button className={styles.button1}>付费选座预测</Button>
               </Link>
@@ -881,6 +885,8 @@ function Predict() {
     default:
       return (
         <div className={styles['result-display']}>
+          <BackTop />
+            <strong className="site-back-top-basic">  </strong>
           <div className={styles['title1']}>
             <div>已完成付费选座预测</div>
           </div>
@@ -926,13 +932,17 @@ function Predict() {
             </h1>
             <div id="probability_dist"></div>
 
-            <h1 className={styles['title2']}>近2年付费选座次数分布统计</h1>
-            <div id="tkt_book"></div>
+            {/* <h1 className={styles['title2']}>近2年付费选座次数分布统计</h1>
+            <div id="tkt_book"></div> */}
 
             <h1 className={styles['title2']}>特征重要程度(前10位)</h1>
             <div id="feature_importance"></div>
           </div>
-
+            
+          <h1 className={styles['title6']}>
+            请选择付费选座概率区间，查看相应旅客详细信息：
+          </h1>
+          
           <Tabs defaultActiveKey="1" centered>
             <TabPane tab="50%~60%" key="1">
               <h1 className={styles['title5']}>

@@ -22,6 +22,9 @@ export default function Home() {
             <Link href={'http://localhost:3000/'}>
               <Button className={styles.button} >系统首页</Button>
             </Link>
+            <Link href={'http://localhost:3000/algorithm'}>
+              <Button className={styles.button} >预测算法可视化展示</Button>
+            </Link>
             <Link href={'http://localhost:3000/predict'}>
               <Button className={styles.button} >付费选座预测</Button>
             </Link>

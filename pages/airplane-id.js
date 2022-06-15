@@ -18,6 +18,7 @@ import {
   message,
   Button,
   Checkbox,
+  BackTop
 } from "antd";
 import { Bar, Area, Column } from "@antv/g2plot";
 import { Chart } from "@antv/g2";
@@ -297,66 +298,66 @@ function Predict() {
     
     cabin.render();
 
-    const tkt_book_table = new Chart({
-      container: "tkt_book",
-      autoFit: true,
-      height: 500,
-    });
-    const tkt_book_data = [
-      {
-        type: "未曾付费选座",
-        value: predictResult.predict.filter(
-          (ele) => ele.tkt_book_cnt_y3_dense == 0
-        ).length,
-      },
-      {
-        type: "曾付费选座",
-        value: predictResult.predict.filter(
-          (ele) => ele.tkt_book_cnt_y3_dense != 0
-        ).length,
-      },
-    ];
-    tkt_book_table.data(tkt_book_data);
-    tkt_book_table.coordinate("theta", {
-      radius: 0.75,
-    });
-    tkt_book_table.tooltip({
-      showMarkers: false,
-    });
-    const interval = tkt_book_table
-      .interval()
-      .adjust("stack")
-      .position("value")
-      .color("type", ["#47abfc", "#38c060"])
-      .style({ opacity: 0.4 })
-      .state({
-        active: {
-          style: (element) => {
-            const shape = element.shape;
-            return {
-              matrix: Util.zoom(shape, 1.1),
-            };
-          },
-        },
-      })
-      .label("type", (val) => {
-        const opacity = val === "zero" ? 0.5 : 0;
-        return {
-          offset: -30,
-          style: {
-            opacity,
-            fill: "white",
-            fontSize: 12,
-            shadowBlur: 2,
-            shadowColor: "rgba(0, 0, 0, .45)",
-          },
-          content: (obj) => {
-            return obj.type + "\n" + obj.value + "%";
-          },
-        };
-      });
-    tkt_book_table.interaction("element-single-selected");
-    tkt_book_table.render();
+    // const tkt_book_table = new Chart({
+    //   container: "tkt_book",
+    //   autoFit: true,
+    //   height: 500,
+    // });
+    // const tkt_book_data = [
+    //   {
+    //     type: "未曾付费选座",
+    //     value: predictResult.predict.filter(
+    //       (ele) => ele.tkt_book_cnt_y3_dense == 0
+    //     ).length,
+    //   },
+    //   {
+    //     type: "曾付费选座",
+    //     value: predictResult.predict.filter(
+    //       (ele) => ele.tkt_book_cnt_y3_dense != 0
+    //     ).length,
+    //   },
+    // ];
+    // tkt_book_table.data(tkt_book_data);
+    // tkt_book_table.coordinate("theta", {
+    //   radius: 0.75,
+    // });
+    // tkt_book_table.tooltip({
+    //   showMarkers: false,
+    // });
+    // const interval = tkt_book_table
+    //   .interval()
+    //   .adjust("stack")
+    //   .position("value")
+    //   .color("type", ["#47abfc", "#38c060"])
+    //   .style({ opacity: 0.4 })
+    //   .state({
+    //     active: {
+    //       style: (element) => {
+    //         const shape = element.shape;
+    //         return {
+    //           matrix: Util.zoom(shape, 1.1),
+    //         };
+    //       },
+    //     },
+    //   })
+    //   .label("type", (val) => {
+    //     const opacity = val === "zero" ? 0.5 : 0;
+    //     return {
+    //       offset: -30,
+    //       style: {
+    //         opacity,
+    //         fill: "white",
+    //         fontSize: 12,
+    //         shadowBlur: 2,
+    //         shadowColor: "rgba(0, 0, 0, .45)",
+    //       },
+    //       content: (obj) => {
+    //         return obj.type + "\n" + obj.value + "%";
+    //       },
+    //     };
+    //   });
+    // tkt_book_table.interaction("element-single-selected");
+    // tkt_book_table.render();
   }, [predictResult]);
 
   const onFinish = (values) => {
@@ -403,6 +404,9 @@ function Predict() {
             <div className={styles["top_right"]}>
               <Link href={"http://localhost:3000/"}>
                 <Button className={styles.button1}>系统首页</Button>
+              </Link>
+              <Link href={'http://localhost:3000/algorithm'}>
+                <Button className={styles.button1} >预测算法可视化展示</Button>
               </Link>
               <Link href={"http://localhost:3000/predict"}>
                 <Button className={styles.button1}>付费选座预测</Button>
@@ -464,6 +468,8 @@ function Predict() {
     default:
       return (
         <div className={styles["result-display"]}>
+          <BackTop />
+            <strong className="site-back-top-basic">  </strong>
           <div className={styles["title1"]}>
             <div>已完成航班号查询</div>
           </div>
@@ -507,10 +513,10 @@ function Predict() {
             </h1>
             <div id="avg_distance"></div> */}
 
-            <h1 className={styles["title2"]}>
+            {/* <h1 className={styles["title2"]}>
               近2年付费选座次数分布统计
             </h1>
-            <div id="tkt_book"></div>
+            <div id="tkt_book"></div> */}
           </div>
         </div>
       );
